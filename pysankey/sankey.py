@@ -57,7 +57,8 @@ def check_data_matches_labels(labels, data, side):
 
 def sankey(left, right, leftWeight=None, rightWeight=None, colorDict=None,
            leftLabels=None, rightLabels=None, aspect=4, rightColor=False,
-           fontsize=14, figureName=None, closePlot=False):
+           fontsize=14, figureName=None, closePlot=False, thetitle=None,
+           ilabel = True):
     '''
     Make Sankey Diagram showing flow from left-->right
 
@@ -77,6 +78,8 @@ def sankey(left, right, leftWeight=None, rightWeight=None, colorDict=None,
         aspect = vertical extent of the diagram in units of horizontal extent
         rightColor = If true, each strip in the diagram will be be colored
                     according to its left label
+        thetitle = add a title to the plot
+        ilabel = If True, labels will be plotted on both sides
     Ouput:
         None
     '''
@@ -190,13 +193,14 @@ def sankey(left, right, leftWeight=None, rightWeight=None, colorDict=None,
             color=colorDict[leftLabel],
             alpha=0.99
         )
-        plt.text(
-            -0.05 * xMax,
-            leftWidths[leftLabel]['bottom'] + 0.5 * leftWidths[leftLabel]['left'],
-            leftLabel,
-            {'ha': 'right', 'va': 'center'},
-            fontsize=fontsize
-        )
+        if (ilabel == True):
+            plt.text(
+             -0.05 * xMax,
+             leftWidths[leftLabel]['bottom'] + 0.5 * leftWidths[leftLabel]['left'],
+             leftLabel,
+             {'ha': 'right', 'va': 'center'},
+             fontsize=fontsize
+             )
     for rightLabel in rightLabels:
         plt.fill_between(
             [xMax, 1.02 * xMax], 2 * [rightWidths[rightLabel]['bottom']],
@@ -204,13 +208,14 @@ def sankey(left, right, leftWeight=None, rightWeight=None, colorDict=None,
             color=colorDict[rightLabel],
             alpha=0.99
         )
-        plt.text(
-            1.05 * xMax,
-            rightWidths[rightLabel]['bottom'] + 0.5 * rightWidths[rightLabel]['right'],
-            rightLabel,
-            {'ha': 'left', 'va': 'center'},
-            fontsize=fontsize
-        )
+        if (ilabel == True):
+            plt.text(
+             1.05 * xMax,
+             rightWidths[rightLabel]['bottom'] + 0.5 * rightWidths[rightLabel]['right'],
+             rightLabel,
+             {'ha': 'left', 'va': 'center'},
+             fontsize=fontsize
+             )
 
     # Plot strips
     for leftLabel in leftLabels:
@@ -236,8 +241,12 @@ def sankey(left, right, leftWeight=None, rightWeight=None, colorDict=None,
                     color=colorDict[labelColor]
                 )
     plt.gca().axis('off')
-    plt.gcf().set_size_inches(6, 6)
+    plt.gcf().set_size_inches(5, 4)
+
+    if thetitle != None:
+        plt.title(thetitle)
+
     if figureName != None:
-        plt.savefig("{}.png".format(figureName), bbox_inches='tight', dpi=150)
+        plt.savefig("{}.pdf".format(figureName), bbox_inches='tight', dpi=150)
     if closePlot:
         plt.close()
